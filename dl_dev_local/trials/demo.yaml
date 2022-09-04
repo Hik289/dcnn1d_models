@@ -1,0 +1,110 @@
+
+## 单任务配置文件
+
+## -------------------------------------------------------
+## GPU
+CUDA_VISIBLE_DEVICES: 0,1,2,3,4,5
+cuda_device: # 调用的GPU编号
+  - 0        
+
+## -------------------------------------------------------
+### 数据
+x_root: 
+  src1:
+    - wp4/
+    - wp7/
+y_root:
+  y_train: y_train/
+  y_eval: y_eval/
+
+# id_train: 1,2,3,4,5,6,7,8,9,10
+# id_test: 11,12,13,14
+
+id_train: '100'
+id_test: '100'
+
+label_train_names: 
+  - y15 
+  # - y12
+  # - y13
+label_eval_names: 
+  - eval0
+  - bk0
+label_train_loc: 
+  - 0
+label_eval_loc: 
+  - 0
+label_test_loc:
+  - 1
+label_benchmark_loc: -1
+id_val: '100'
+val_subsample: 'same'
+## -------------------------------------------------------
+## 模型
+model: fcDnn_1  
+model_args: 
+  input_dim: 470
+  # head_num: 4
+
+## -------------------------------------------------------
+## 损失函数
+loss_name: mseLoss_1
+loss_args:
+  # y_scale: 1
+  # y_mean: 0
+
+## -------------------------------------------------------
+## 训练
+trainer: SI
+lr: &lr 0.001
+batch_size: 16           # minibatch大小
+max_epoch: 200            # 最大epoch
+ES_patience: 10
+ISIC_limit: 0.90
+pretrain_model_path:      # 迁移训练
+load_model_path:        # 断点训练
+
+
+# ----------- 学习率scheduler -----------
+
+use_WarmUp: true
+Warmup_step: 4148
+Warmup_multiplier: 20
+sch_verbose: false
+
+sch_name: 'CyclicLR'
+sch_args:
+  base_lr: 0.0001
+  max_lr:  0.001
+  # step_size_up: 3444
+  # step_size_up: 3444
+  step_size_up: 1036
+  step_size_up: 1036
+  cycle_momentum: false
+
+# sch_name: 'StepLR'
+# sch_args:
+#   step_size: 100
+#   gamma: 0.9
+#   verbose: true
+
+# --------------- 优化器 ----------------
+use_SAM: true           
+
+# optim_name: SGD
+# optim_args:
+#   lr: *lr
+#   momentum: 0.9
+#   weight_decay: 0.0001
+
+optim_name: Adam
+optim_args:
+  lr: *lr
+  weight_decay: 0.0001
+
+## -------------------------------------------------------
+## 输出
+env: ''                # 任务标签
+debug_mode: false   # 仅用于debug，无输出
+vis_plot: false
+workspace: '/home/xysong/dl_dev_local/outputs/'
